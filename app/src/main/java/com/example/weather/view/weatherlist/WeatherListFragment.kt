@@ -13,10 +13,10 @@ import com.example.weather.viewmodel.AppState
 class WeatherListFragment : Fragment() {
 
     companion object {
-        fun newInstance() = WeatherListFragment()
+        fun newInstance() = WeatherListFragment() // метод newInstance() возвращает WeatherListFragment()
     }
 
-    private var binding: FragmentWeatherListBinding?= null
+    private var binding: FragmentWeatherListBinding?= null // объявили binding
 
     override fun onDestroy() {
         super.onDestroy()
@@ -24,18 +24,18 @@ class WeatherListFragment : Fragment() {
     }
 
     lateinit var viewModel: WeatherListViewModel
-    override fun onCreateView(
+    override fun onCreateView( // процесс создания фрагмента
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWeatherListBinding.inflate(inflater)
+        binding = FragmentWeatherListBinding.inflate(inflater)//надули фрагмент bindingom
         return binding!!.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {// реагируем, когда фрагмент создан
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(WeatherListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(WeatherListViewModel::class.java)//получение ViewModel из "чана"
         viewModel.getLiveData().observe(viewLifecycleOwner,object : Observer<AppState> {
             override fun onChanged(t: AppState) {
                 renderData(t)
