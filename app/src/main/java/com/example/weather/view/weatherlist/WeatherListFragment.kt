@@ -16,11 +16,15 @@ class WeatherListFragment : Fragment() {
         fun newInstance() = WeatherListFragment() // метод newInstance() возвращает WeatherListFragment()
     }
 
-    private var binding: FragmentWeatherListBinding?= null // объявили binding
+    private var _binding: FragmentWeatherListBinding?= null
+    private val binding: FragmentWeatherListBinding
+        get(){
+            return _binding!!
+        }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
     lateinit var viewModel: WeatherListViewModel
@@ -29,7 +33,7 @@ class WeatherListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWeatherListBinding.inflate(inflater)//надули фрагмент bindingom
+        _binding = FragmentWeatherListBinding.inflate(inflater)//надули фрагмент bindingom
         return binding!!.root
     }
 
@@ -50,10 +54,10 @@ class WeatherListFragment : Fragment() {
             AppState.Loading -> {/*TODO HW*/}
             is AppState.Success -> {
                 val result = appState.weatherData
-                binding!!.cityName.text = result.city.name
-                binding!!.temperatureValue.text = result.temperature.toString()
-                binding!!.feelsLikeValue.text = result.feelsLike.toString()
-                binding!!.cityCoordinates.text = "${result.city.lat}/${result.city.lon}"
+                binding.cityName.text = result.city.name
+                binding.temperatureValue.text = result.temperature.toString()
+                binding.feelsLikeValue.text = result.feelsLike.toString()
+                binding.cityCoordinates.text = "${result.city.lat}/${result.city.lon}"
             }
         }
     }
