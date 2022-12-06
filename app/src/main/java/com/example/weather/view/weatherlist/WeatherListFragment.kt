@@ -10,9 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.viewmodel.AppState
 import com.example.weather.R
+import com.example.weather.domain.Weather
+import com.example.weather.view.details.DetailsFragment
+import com.example.weather.view.details.OnItemClick
 
 
-class WeatherListFragment : Fragment() {
+class WeatherListFragment : Fragment() , OnItemClick {
 
     companion object {
         fun newInstance() = WeatherListFragment() // метод newInstance() возвращает WeatherListFragment()
@@ -71,10 +74,14 @@ class WeatherListFragment : Fragment() {
                 val result = appState.weatherData
             }
             is AppState.SuccessMulti ->{
-                binding.mainFragmentRecyclerView.adapter =WeatherListAdapter(appState.weatherList)
+                binding.mainFragmentRecyclerView.adapter =WeatherListAdapter(appState.weatherList,this )
             }
         }
     }
 
-
+    override fun onItemClick(weather: Weather) {
+        requireActivity().supportFragmentManager.beginTransaction().hide(this).add(
+            R.id.container, DetailsFragment.newInstance(weather)
+        ).addToBackStack("").commit()
+    }
 }
