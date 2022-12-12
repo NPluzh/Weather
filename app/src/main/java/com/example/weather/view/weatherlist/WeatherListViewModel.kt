@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.model.*
 import com.example.weather.viewmodel.AppState
+import kotlin.random.Random
 
 class WeatherListViewModel(private val liveData: MutableLiveData<AppState> = MutableLiveData<AppState>()) :
     ViewModel() {
@@ -36,12 +37,14 @@ class WeatherListViewModel(private val liveData: MutableLiveData<AppState> = Mut
     private fun sentRequest(location: Location) {
         //choiceRepository()
         liveData.value = AppState.Loading
-        if(false){ //FIXME
-            liveData.postValue(AppState.Error(throw IllegalStateException("что-то пошлло не так")))
-        }else{
-            liveData.postValue(AppState.SuccessMulti(repositoryMulti.getListWeather(location)))
-        }
-
+        Thread {
+            Thread.sleep(3000L)
+            if ((0..3).random(Random(System.currentTimeMillis())) == 1) {
+                liveData.postValue(AppState.Error(IllegalStateException("что-то пошлло не так")))
+            } else {
+                liveData.postValue(AppState.SuccessMulti(repositoryMulti.getListWeather(location)))
+            }
+        }.start()
     }
 
     private fun isConnection(): Boolean {
