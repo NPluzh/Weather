@@ -47,11 +47,7 @@ class WeatherListFragment : Fragment() , OnItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {// реагируем, когда фрагмент создан
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(WeatherListViewModel::class.java)//получение ViewModel из "чана"
-        viewModel.getLiveData().observe(viewLifecycleOwner,object : Observer<AppState> {
-            override fun onChanged(t: AppState) {
-                renderData(t)
-            }
-        })
+        viewModel.getLiveData().observe(viewLifecycleOwner) { t -> renderData(t) }
 
         binding.weatherListFragmentFAB.setOnClickListener {
             isRussian = !isRussian
@@ -68,15 +64,28 @@ class WeatherListFragment : Fragment() , OnItemClick {
 
     private fun renderData(appState: AppState){
         when (appState){
-            is AppState.Error -> {/*TODO HW*/ }
-            AppState.Loading -> {/*TODO HW*/}
+            is AppState.Error -> { binding.showResult()}
+            AppState.Loading -> {binding.loading()}
             is AppState.SuccessOne -> {
+                binding.showResult()
                 val result = appState.weatherData
             }
             is AppState.SuccessMulti ->{
-                binding.mainFragmentRecyclerView.adapter =WeatherListAdapter(appState.weatherList,this )
+                binding.showResult()
+                binding.mainFragmentRecyclerView.adapter =
+                    WeatherListAdapter(appState.weatherList, this)
             }
         }
+    }
+
+    fun FragmentWeatherListBinding.loading() {
+        this.mainFragmentLoadingLayout.visibility = View.VISIBLE
+        this.weatherListFragmentFAB.visibility = View.GONE
+    }
+
+    fun FragmentWeatherListBinding.showResult() {
+        this.mainFragmentLoadingLayout.visibility = View.GONE
+        this.weatherListFragmentFAB.visibility = View.VISIBLE
     }
 
     override fun onItemClick(weather: Weather) {
