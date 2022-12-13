@@ -9,6 +9,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weather.databinding.ActivityWebviewBinding
+import com.example.weather.utils.getLines
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -66,9 +67,6 @@ internal class WebViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLines(reader: BufferedReader): String {
-        return reader.lines().collect(Collectors.joining("\n"))
-    }
 
 
 
