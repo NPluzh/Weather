@@ -17,13 +17,14 @@ import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.domain.Weather
 import com.example.weather.model.dto.WeatherDTO
-import com.example.weather.utils.BUNDLE_CITY_KEY
-import com.example.weather.utils.BUNDLE_WEATHER_DTO_KEY
-import com.example.weather.utils.WAVE
-import com.example.weather.utils.WeatherLoader
+import com.example.weather.utils.*
 import com.example.weather.view.weatherlist.WeatherListFragment
 import com.example.weather.view.weatherlist.WeatherListViewModel
 import com.example.weather.viewmodel.AppState
+import com.google.gson.Gson
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class DetailsFragment : Fragment() {
 
@@ -78,7 +79,7 @@ class DetailsFragment : Fragment() {
         weather?.let { weatherLocal ->
             this.weatherLocal = weatherLocal
 
-
+            /*
             LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
                 receiver,
                 IntentFilter(WAVE)
@@ -90,7 +91,32 @@ class DetailsFragment : Fragment() {
                     DetailsServiceIntent::class.java
                 ).apply {
                     putExtra(BUNDLE_CITY_KEY, weatherLocal.city)
-                })
+                })*/
+            val client = OkHttpClient()
+            val builder = Request.Builder()
+            builder.addHeader(YANDEX_API_KEY, "ceae3d76-b634-4bfd-8ef5-25a327758ae9")
+            builder.url("https://api.weather.yandex.ru/v2/informers?lat=${weatherLocal.city.lat}&lon=${weatherLocal.city.lon}")
+            val request: Request = builder.build()
+            val call: Call = client.newCall(request)
+            Thread {
+                val response = call.execute()
+                if (response.isSuccessful) {
+                }
+                if (response.code in 200..299) {
+                    response.body?.let {
+                        val responseString = it.string()
+                        val weatherDTO = Gson().fromJson((responseString), WeatherDTO::class.java)
+                        weatherLocal.feelsLike = weatherDTO.fact.feelsLike
+                        weatherLocal.temperature = weatherDTO.fact.temp
+                        requireActivity().runOnUiThread {
+                            renderData(weatherLocal)
+                        }
+                        Log.d("@@@", "${responseString}")
+                        //Log.d("@@@", "${it.string()}") // FIXME что-то странное
+                    }
+                }
+            }.start()
+
         }
 
 
