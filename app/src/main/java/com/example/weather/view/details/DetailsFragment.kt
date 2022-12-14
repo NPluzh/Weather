@@ -3,27 +3,27 @@ package com.example.weather.view.details
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.load
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
+import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
-import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.domain.Weather
 import com.example.weather.model.dto.WeatherDTO
-import com.example.weather.utils.BUNDLE_CITY_KEY
-import com.example.weather.utils.BUNDLE_WEATHER_DTO_KEY
-import com.example.weather.utils.WAVE
-import com.example.weather.utils.WeatherLoader
-import com.example.weather.view.weatherlist.WeatherListFragment
-import com.example.weather.view.weatherlist.WeatherListViewModel
-import com.example.weather.viewmodel.AppState
+import com.example.weather.utils.*
+import com.google.gson.Gson
+import okhttp3.*
+import java.io.IOException
 
 class DetailsFragment : Fragment() {
 
@@ -34,27 +34,11 @@ class DetailsFragment : Fragment() {
             return _binding!!
         }
 
-
-    val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-
-            Log.d("@@@", "onReceive ${binding.root}")
-            intent?.let {
-                it.getParcelableExtra<WeatherDTO>(BUNDLE_WEATHER_DTO_KEY)
-                    ?.let { watherDTO ->
-                        bindWeatherLocalWithWeatherDTO(weatherLocal, watherDTO)
-                    }
-            }
-        }
-    }
-
     lateinit var weatherLocal: Weather
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private val viewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,44 +61,62 @@ class DetailsFragment : Fragment() {
 
         weather?.let { weatherLocal ->
             this.weatherLocal = weatherLocal
-
-
-            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-                receiver,
-                IntentFilter(WAVE)
-            )
-
-            requireActivity().startService(
-                Intent(
-                    requireContext(),
-                    DetailsServiceIntent::class.java
-                ).apply {
-                    putExtra(BUNDLE_CITY_KEY, weatherLocal.city)
-                })
+            viewModel.getWeather(weatherLocal.city.lat,weatherLocal.city.lon)
+            viewModel.getLiveData().observe(viewLifecycleOwner) {
+                renderData(it)
+            }
         }
-
-
     }
 
-    private fun bindWeatherLocalWithWeatherDTO(
-        weatherLocal: Weather,
-        weatherDTO: WeatherDTO
-    ) {
-        renderData(weatherLocal.apply {
-            weatherLocal.feelsLike = weatherDTO.fact.feelsLike
-            weatherLocal.temperature = weatherDTO.fact.temp
-        })
-    }
 
     // FIXME диссонанс this - как бы приемник?
-    private fun renderData(weather: Weather) {
+    private fun renderData(detailsFragmentAppState: DetailsFragmentAppState) {
 
-        with(binding) {
-            cityName.text = weather.city.name
-            temperatureValue.text = weather.temperature.toString()
-            feelsLikeValue.text = weather.feelsLike.toString()
-            cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
+        when(detailsFragmentAppState){
+            is DetailsFragmentAppState.Error -> {}
+            DetailsFragmentAppState.Loading -> {}
+            is DetailsFragmentAppState.Success -> {
+                with(binding) {
+                    val weatherDTO = detailsFragmentAppState.weatherData
+                    cityName.text = weatherLocal.city.name
+                    temperatureValue.text = weatherDTO.fact.temp.toString()
+                    feelsLikeValue.text = weatherDTO.fact.feelsLike.toString()
+                    cityCoordinates.text = "${weatherLocal.city.lat}/${weatherLocal.city.lon}"
+
+                    //icon.load("https://c1.staticflickr.com/1/186/31520440226_175445c41a_b.jpg"){
+                  /* icon.load("https://i.pinimg.com/originals/de/1f/6f/de1f6f936d497684c4a023dcde8576cc.jpg\n"){
+                        error(R.drawable.ic_earth)
+                        placeholder(R.drawable.ic_launcher_background)
+                        transformations(CircleCropTransformation())
+                    }*/
+
+                    /*Glide.with(this.root)
+                        .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                        .into(icon)
+
+                    Picasso.get().load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                        .into(icon)*/
+
+                    icon.loadUrl("https://yastatic.net/weather/i/icons/funky/dark/${weatherDTO.fact.icon}.svg")
+                }
+            }
         }
+    }
+
+    fun ImageView.loadUrl(url: String) {
+
+        val imageLoader = ImageLoader.Builder(this.context)
+            .componentRegistry{add(SvgDecoder(this@loadUrl.context))}
+            .build()
+
+        val request = ImageRequest.Builder(this.context)
+            .crossfade(true)
+            .crossfade(500)
+            .data(url)
+            .target(this)
+            .build()
+
+        imageLoader.enqueue(request)
     }
 
     companion object {
@@ -135,6 +137,12 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
 
 
 }
+
