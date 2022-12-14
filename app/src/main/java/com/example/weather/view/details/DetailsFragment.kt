@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import coil.load
+import coil.transform.CircleCropTransformation
+import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.domain.Weather
 import com.example.weather.model.dto.WeatherDTO
@@ -75,6 +78,21 @@ class DetailsFragment : Fragment() {
                     temperatureValue.text = weatherDTO.fact.temp.toString()
                     feelsLikeValue.text = weatherDTO.fact.feelsLike.toString()
                     cityCoordinates.text = "${weatherLocal.city.lat}/${weatherLocal.city.lon}"
+
+                    //icon.load("https://c1.staticflickr.com/1/186/31520440226_175445c41a_b.jpg"){
+                    icon.load("https://i.pinimg.com/originals/de/1f/6f/de1f6f936d497684c4a023dcde8576cc.jpg\n"){
+                        error(R.drawable.ic_earth)
+                        placeholder(R.drawable.ic_launcher_background)
+                        transformations(CircleCropTransformation())
+                    }
+
+                    /*Glide.with(this.root)
+                        .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                        .into(icon)
+
+                    Picasso.get().load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                        .into(icon)*/
+
                 }
             }
         }
