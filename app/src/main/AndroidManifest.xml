@@ -31,6 +31,25 @@
             android:name=".web.WebViewActivity"
             android:exported="true">
         </activity>
+
+        <service
+            android:name=".another.MyService"
+            android:exported="true" />
+
+        <service
+            android:name=".view.details.DetailsServiceIntent"
+            android:exported="true" />
+
+        <receiver
+            android:name=".another.MyBroadCastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.AIRPLANE_MODE" />
+                <action android:name="myaction" />
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>
