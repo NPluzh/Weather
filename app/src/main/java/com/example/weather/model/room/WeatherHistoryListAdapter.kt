@@ -4,6 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather.databinding.FragmentWeatherHistoryListRecyclerItemBinding
+import com.example.weather.domain.Weather
+import com.example.weather.view.details.OnItemClick
 
 class WeatherHistoryListAdapter(private val dataList:List<Weather>, private val callback: OnItemClick):
     RecyclerView.Adapter<WeatherHistoryListAdapter.WeatherViewHolder>() {

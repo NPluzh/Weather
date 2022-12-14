@@ -7,6 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 
+import com.example.weather.R
+import com.example.weather.databinding.FragmentWeatherHistoryListBinding
+import com.example.weather.domain.Weather
+import com.example.weather.view.details.DetailsFragment
+import com.example.weather.view.details.OnItemClick
+import com.example.weather.viewmodel.wheatherhistorylist.WeatherHistoryListFragmentAppState
+import com.example.weather.viewmodel.wheatherhistorylist.WeatherHistoryListViewModel
+
 class WeatherHistoryListFragment : Fragment(), OnItemClick {
 
     companion object {

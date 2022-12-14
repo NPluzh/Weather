@@ -103,4 +103,5 @@ class DetailsViewModel(private val liveData: MutableLiveData<DetailsFragmentAppS
     override fun onCleared() {
         super.onCleared()
     }
+
 }

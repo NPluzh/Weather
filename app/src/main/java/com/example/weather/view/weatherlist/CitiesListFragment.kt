@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.R
 import com.example.weather.databinding.FragmentCitiesListBinding
 import com.example.weather.domain.Weather

@@ -1,8 +1,11 @@
 package com.example.weather.model.retrofit
 
-import com.example.weather.model.MyLargeSuperCallback
+import com.example.weather.domain.City
+import com.example.weather.model.CommonWeatherCallback
 import com.example.weather.model.RepositoryDetails
+import com.example.weather.model.RepositoryWeatherByCity
 import com.example.weather.model.dto.WeatherDTO
+import com.example.weather.utils.bindDTOWithCity
 import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +21,7 @@ class RepositoryLocationToOneWeatherRetrofitImpl : RepositoryWeatherByCity {
         retrofitImpl.addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         val api = retrofitImpl.build().create(WeatherAPI::class.java)
         //api.getWeather(BuildConfig.WEATHER_API_KEY,lat,lon).execute() // синхронный запрос
-        api.getWeather(BuildConfig.WEATHER_API_KEY,city.lat,city.lon).enqueue(object :Callback<WeatherDTO>{
+        api.getWeather("ceae3d76-b634-4bfd-8ef5-25a327758ae9",city.lat,city.lon).enqueue(object :Callback<WeatherDTO>{
             override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
                 // response.raw().request // тут есть информация - а кто же нас вызвал
                 if(response.isSuccessful&&response.body()!=null){

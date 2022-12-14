@@ -4,6 +4,7 @@ import com.example.weather.domain.City
 import com.example.weather.domain.Weather
 import com.example.weather.model.dto.WeatherDTO
 import com.example.weather.utils.YANDEX_API_KEY
+import com.example.weather.utils.bindDTOWithCity
 import com.example.weather.utils.getLines
 import com.google.gson.Gson
 import java.io.BufferedReader
