@@ -52,9 +52,11 @@ internal class MainActivity : AppCompatActivity() {
             putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
             apply()
         }
-
+        val rows=  MyApp.getWeatherDatabase().weatherDao().getWeatherAll()
 
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_screen_menu, menu)
