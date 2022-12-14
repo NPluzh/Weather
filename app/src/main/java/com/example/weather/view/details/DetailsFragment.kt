@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.domain.Weather
 import com.example.weather.model.dto.WeatherDTO
@@ -26,27 +27,11 @@ class DetailsFragment : Fragment() {
             return _binding!!
         }
 
-
-    val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-
-            Log.d("@@@", "onReceive ${binding.root}")
-            intent?.let {
-                it.getParcelableExtra<WeatherDTO>(BUNDLE_WEATHER_DTO_KEY)
-                    ?.let { watherDTO ->
-                        bindWeatherLocalWithWeatherDTO(weatherLocal, watherDTO)
-                    }
-            }
-        }
-    }
-
     lateinit var weatherLocal: Weather
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private val viewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,75 +54,29 @@ class DetailsFragment : Fragment() {
 
         weather?.let { weatherLocal ->
             this.weatherLocal = weatherLocal
-
-            /*
-            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-                receiver,
-                IntentFilter(WAVE)
-            )
-
-            requireActivity().startService(
-                Intent(
-                    requireContext(),
-                    DetailsServiceIntent::class.java
-                ).apply {
-                    putExtra(BUNDLE_CITY_KEY, weatherLocal.city)
-                })*/
-            val client = OkHttpClient()
-            val builder = Request.Builder()
-            builder.addHeader(YANDEX_API_KEY, "ceae3d76-b634-4bfd-8ef5-25a327758ae9")
-            builder.url("https://api.weather.yandex.ru/v2/informers?lat=${weatherLocal.city.lat}&lon=${weatherLocal.city.lon}")
-            val request: Request = builder.build()
-            val call: Call = client.newCall(request)
-            call.enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    // TODO HW
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    //if (response.isSuccessful) { }
-                    if (response.code in 200..299 && response.body != null) {
-                        response.body?.let {
-                            val responseString = it.string()
-                            val weatherDTO =
-                                Gson().fromJson((responseString), WeatherDTO::class.java)
-                            weatherLocal.feelsLike = weatherDTO.fact.feelsLike
-                            weatherLocal.temperature = weatherDTO.fact.temp
-                            requireActivity().runOnUiThread {
-                                renderData(weatherLocal)
-                            }
-                            Log.d("@@@", "${responseString}")
-                            //Log.d("@@@", "${it.string()}") // FIXME что-то странное
-                        }
-                    } else {
-                        // TODO HW
-                    }
-                }
-            })
-
+            viewModel.getWeather(weatherLocal.city.lat,weatherLocal.city.lon)
+            viewModel.getLiveData().observe(viewLifecycleOwner) {
+                renderData(it)
+            }
         }
-
-
     }
 
-    private fun bindWeatherLocalWithWeatherDTO(
-        weatherLocal: Weather,
-        weatherDTO: WeatherDTO
-    ) {
-        renderData(weatherLocal.apply {
-            weatherLocal.feelsLike = weatherDTO.fact.feelsLike
-            weatherLocal.temperature = weatherDTO.fact.temp
-        })
-    }
 
     // FIXME диссонанс this - как бы приемник?
-    private fun renderData(weather: Weather) {
+    private fun renderData(detailsFragmentAppState: DetailsFragmentAppState) {
 
-        with(binding) {
-            cityName.text = weather.city.name
-            temperatureValue.text = weather.temperature.toString()
-            feelsLikeValue.text = weather.feelsLike.toString()
-            cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
+        when(detailsFragmentAppState){
+            is DetailsFragmentAppState.Error -> {}
+            DetailsFragmentAppState.Loading -> {}
+            is DetailsFragmentAppState.Success -> {
+                with(binding) {
+                    val weatherDTO = detailsFragmentAppState.weatherData
+                    cityName.text = weatherLocal.city.name
+                    temperatureValue.text = weatherDTO.fact.temp.toString()
+                    feelsLikeValue.text = weatherDTO.fact.feelsLike.toString()
+                    cityCoordinates.text = "${weatherLocal.city.lat}/${weatherLocal.city.lon}"
+                }
+            }
         }
     }
 
@@ -159,6 +98,12 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
 
 
 }
+
