@@ -8,7 +8,7 @@ import com.google.gson.Gson
 import okhttp3.*
 import java.io.IOException
 
-class RepositoryDetailsOkHttpImpl:RepositoryDetails {override fun getWeather(lat: Double, lon: Double, callback: MyLargeSuperCallback) {
+class RepositoryOkHttpImpl:RepositoryDetails {override fun getWeather(lat: Double, lon: Double, callback: MyLargeSuperCallback) {
     val client = OkHttpClient()
     val builder = Request.Builder()
     builder.addHeader(YANDEX_API_KEY, "ceae3d76-b634-4bfd-8ef5-25a327758ae9")

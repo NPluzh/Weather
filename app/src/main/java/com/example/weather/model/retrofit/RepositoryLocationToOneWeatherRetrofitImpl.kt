@@ -11,18 +11,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
-class RepositoryDetailsRetrofitImpl : RepositoryDetails {
-    override fun getWeather(lat: Double, lon: Double, callback: MyLargeSuperCallback) {
+class RepositoryLocationToOneWeatherRetrofitImpl : RepositoryWeatherByCity {
+    override fun getWeather(city: City, callback: CommonWeatherCallback) {
         val retrofitImpl = Retrofit.Builder()
         retrofitImpl.baseUrl("https://api.weather.yandex.ru")
         retrofitImpl.addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         val api = retrofitImpl.build().create(WeatherAPI::class.java)
         //api.getWeather(BuildConfig.WEATHER_API_KEY,lat,lon).execute() // синхронный запрос
-        api.getWeather("ceae3d76-b634-4bfd-8ef5-25a327758ae9",lat,lon).enqueue(object : Callback<WeatherDTO> {
+        api.getWeather(BuildConfig.WEATHER_API_KEY,city.lat,city.lon).enqueue(object :Callback<WeatherDTO>{
             override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
                 // response.raw().request // тут есть информация - а кто же нас вызвал
                 if(response.isSuccessful&&response.body()!=null){
-                    callback.onResponse(response.body()!!)
+                    callback.onResponse(bindDTOWithCity(response.body()!!,city))
                 }else {
                     // TODO HW callback.on??? 403 404
                     callback.onFailure(IOException("403 404"))

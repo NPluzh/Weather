@@ -16,6 +16,7 @@ import com.example.weather.another.MyBroadCastReceiver
 import com.example.weather.another.MyService
 import com.example.weather.another.ThreadsFragment
 import com.example.weather.databinding.ActivityMainBinding
+import com.example.weather.model.room.WeatherHistoryListFragment
 import com.example.weather.utils.SP_DB_NAME_IS_RUSSIAN
 import com.example.weather.utils.SP_KEY_IS_RUSSIAN
 import com.example.weather.view.weatherlist.CitiesListFragment
@@ -52,11 +53,11 @@ internal class MainActivity : AppCompatActivity() {
             putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
             apply()
         }
-        val rows=  MyApp.getWeatherDatabase().weatherDao().getWeatherAll()
+
+
+
 
     }
-
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_screen_menu, menu)
@@ -69,6 +70,15 @@ internal class MainActivity : AppCompatActivity() {
                 supportFragmentManager.apply {
                     beginTransaction()
                         .add(R.id.container, ThreadsFragment())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+                true
+            }
+            R.id.menu_history -> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .replace(R.id.container, WeatherHistoryListFragment())
                         .addToBackStack("")
                         .commitAllowingStateLoss()
                 }

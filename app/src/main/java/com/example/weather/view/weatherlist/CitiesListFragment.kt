@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.databinding.FragmentWeatherListBinding
-import com.example.weather.viewmodel.AppState
 import com.example.weather.R
+import com.example.weather.databinding.FragmentCitiesListBinding
 import com.example.weather.domain.Weather
 import com.example.weather.utils.SP_DB_NAME_IS_RUSSIAN
 import com.example.weather.utils.SP_KEY_IS_RUSSIAN
@@ -19,17 +19,17 @@ import com.example.weather.viewmodel.citieslist.CitiesListViewModel
 import com.example.weather.viewmodel.citieslist.CityListFragmentAppState
 
 
-class CitiesListFragment : Fragment() , OnItemClick {
+class CitiesListFragment : Fragment(), OnItemClick {
 
     companion object {
-        fun newInstance() = CitiesListFragment() // метод newInstance() возвращает WeatherListFragment()
+        fun newInstance() = CitiesListFragment()
     }
 
     var isRussian = true
 
-    private var _binding: FragmentWeatherListBinding?= null
-    private val binding: FragmentWeatherListBinding
-        get(){
+    private var _binding: FragmentCitiesListBinding? = null
+    private val binding: FragmentCitiesListBinding
+        get() {
             return _binding!!
         }
 
@@ -39,30 +39,30 @@ class CitiesListFragment : Fragment() , OnItemClick {
     }
 
     lateinit var viewModel: CitiesListViewModel
-    override fun onCreateView( // процесс создания фрагмента
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentWeatherListBinding.inflate(inflater)//надули фрагмент bindingom
-        return binding!!.root
+    ): View {
+        _binding = FragmentCitiesListBinding.inflate(inflater)
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {// реагируем, когда фрагмент создан
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CitiesListViewModel::class.java)//получение ViewModel из "чана"
+        viewModel = ViewModelProvider(this).get(CitiesListViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner) { t -> renderData(t) }
 
         binding.weatherListFragmentFAB.setOnClickListener {
             isRussian = !isRussian
-            if(isRussian){
+            if (isRussian) {
                 viewModel.getWeatherListForRussia()
                 binding.weatherListFragmentFAB.setImageResource(R.drawable.ic_russia)
-            }else{
+            } else {
                 viewModel.getWeatherListForWorld()
                 binding.weatherListFragmentFAB.setImageResource(R.drawable.ic_earth)
             }
-            val sp = requireActivity().getSharedPreferences(SP_DB_NAME_IS_RUSSIAN, Context.MODE_PRIVATE)
+            val sp = requireActivity().getSharedPreferences(SP_DB_NAME_IS_RUSSIAN,Context.MODE_PRIVATE)
             val editor = sp.edit()
             editor.putBoolean(SP_KEY_IS_RUSSIAN,isRussian)
             editor.commit()
@@ -70,6 +70,7 @@ class CitiesListFragment : Fragment() , OnItemClick {
         }
         viewModel.getWeatherListForRussia()
     }
+
 
     private fun renderData(cityListFragmentAppState: CityListFragmentAppState) {
         when (cityListFragmentAppState) {
@@ -86,17 +87,17 @@ class CitiesListFragment : Fragment() , OnItemClick {
             is CityListFragmentAppState.SuccessMulti -> {
                 binding.showResult()
                 binding.mainFragmentRecyclerView.adapter =
-                    DetailsListAdapter(cityListFragmentAppState.weatherList, this)
+                    CitiesListAdapter(cityListFragmentAppState.weatherList, this)
             }
         }
     }
 
-    fun FragmentWeatherListBinding.loading() {
+    fun FragmentCitiesListBinding.loading() {
         this.mainFragmentLoadingLayout.visibility = View.VISIBLE
         this.weatherListFragmentFAB.visibility = View.GONE
     }
 
-    fun FragmentWeatherListBinding.showResult() {
+    fun FragmentCitiesListBinding.showResult() {
         this.mainFragmentLoadingLayout.visibility = View.GONE
         this.weatherListFragmentFAB.visibility = View.VISIBLE
     }
@@ -106,4 +107,6 @@ class CitiesListFragment : Fragment() , OnItemClick {
             R.id.container, DetailsFragment.newInstance(weather)
         ).addToBackStack("").commit()
     }
+
+
 }

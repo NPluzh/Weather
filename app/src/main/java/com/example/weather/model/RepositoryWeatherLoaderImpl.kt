@@ -1,7 +1,7 @@
 package com.example.weather.model
 
+import com.example.weather.domain.City
 import com.example.weather.domain.Weather
-import com.example.weather.domain.getDefaultCity
 import com.example.weather.model.dto.WeatherDTO
 import com.example.weather.utils.YANDEX_API_KEY
 import com.example.weather.utils.getLines
@@ -12,10 +12,10 @@ import java.io.InputStreamReader
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-class RepositoryDetailsWeatherLoaderImpl: RepositoryDetails {
-    override fun getWeather(lat: Double, lon: Double, callback: MyLargeSuperCallback) {
+class RepositoryWeatherLoaderImpl: RepositoryWeatherByCity {
+    override fun getWeather(city: City, callback: CommonWeatherCallback) {
         Thread {
-            val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}")
+            val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${city.lat}&lon=${city.lon}")
             var myConnection: HttpsURLConnection? = null
             myConnection = uri.openConnection() as HttpsURLConnection
             try {
@@ -24,8 +24,8 @@ class RepositoryDetailsWeatherLoaderImpl: RepositoryDetails {
 
                 val reader = BufferedReader(InputStreamReader(myConnection.inputStream))
                 val weatherDTO = Gson().fromJson(getLines(reader), WeatherDTO::class.java)
-                callback.onResponse(weatherDTO)
-            }catch (e: IOException){
+                callback.onResponse(bindDTOWithCity(weatherDTO,city))
+            }catch (e:IOException){
                 callback.onFailure(e)
             }finally {
                 myConnection.disconnect()

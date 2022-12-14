@@ -8,15 +8,29 @@ fun interface RepositoryDetails {
     fun getWeather(lat: Double, lon: Double,callback: MyLargeSuperCallback)
 }
 
+fun interface RepositoryWeatherByCity {
+    fun getWeather(city: City,callback: CommonWeatherCallback)
+}
 
-interface MyLargeSuperCallback{
-    fun onResponse(weatherDTO: WeatherDTO)
+fun interface RepositoryWeatherAvailable {
+    fun getWeatherAll(callback: CommonListWeatherCallback)
+}
+
+fun interface RepositoryWeatherSave {
+    fun addWeather(weather: Weather)
+}
+
+
+interface CommonWeatherCallback{
+    fun onResponse(weather: Weather)
     fun onFailure(e: IOException)
 }
 
-fun interface RepositoryOne {
-    fun getWeather( lat: Double, lon: Double):Weather
+interface CommonListWeatherCallback{
+    fun onResponse(weather: List<Weather>)
+    fun onFailure(e: IOException)
 }
+
 fun interface RepositoryCitiesList {
     fun getListCities(location:Location):List<Weather>
 }
