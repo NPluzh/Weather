@@ -1,7 +1,9 @@
 package com.example.weather.view.details
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.MyApp
 import com.example.weather.model.*
 import com.example.weather.model.dto.WeatherDTO
 import java.io.IOException
@@ -17,7 +19,8 @@ class DetailsViewModel(private val liveData: MutableLiveData<DetailsFragmentAppS
     }
 
     private fun choiceRepository() {
-        repository = when (2) {
+        val sp = MyApp.getMyApp().getSharedPreferences("erhrth", Context.MODE_PRIVATE)
+        repository = when (sp.getInt("rturtu",2)) {
             1 -> {
                 RepositoryDetailsOkHttpImpl()
             }

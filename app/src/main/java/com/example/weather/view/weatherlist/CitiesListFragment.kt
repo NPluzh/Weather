@@ -1,5 +1,6 @@
 package com.example.weather.view.weatherlist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.viewmodel.AppState
 import com.example.weather.R
 import com.example.weather.domain.Weather
+import com.example.weather.utils.SP_DB_NAME_IS_RUSSIAN
+import com.example.weather.utils.SP_KEY_IS_RUSSIAN
 import com.example.weather.view.details.DetailsFragment
 import com.example.weather.view.details.OnItemClick
 import com.example.weather.viewmodel.citieslist.CitiesListViewModel
@@ -59,6 +62,11 @@ class CitiesListFragment : Fragment() , OnItemClick {
                 viewModel.getWeatherListForWorld()
                 binding.weatherListFragmentFAB.setImageResource(R.drawable.ic_earth)
             }
+            val sp = requireActivity().getSharedPreferences(SP_DB_NAME_IS_RUSSIAN, Context.MODE_PRIVATE)
+            val editor = sp.edit()
+            editor.putBoolean(SP_KEY_IS_RUSSIAN,isRussian)
+            editor.commit()
+            editor.apply()
         }
         viewModel.getWeatherListForRussia()
     }

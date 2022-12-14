@@ -8,3 +8,6 @@ const val YANDEX_API_KEY= "X-Yandex-API-Key"
 const val WAVE = "wseger4ye5r"
 const val BUNDLE_WEATHER_DTO_KEY = "drfhrtjh"
 const val BUNDLE_CITY_KEY = "rehethrtjh"
+
+const val SP_DB_NAME_IS_RUSSIAN = "IS_RUSSIAN"
+const val SP_KEY_IS_RUSSIAN = "wserrgewrg"
