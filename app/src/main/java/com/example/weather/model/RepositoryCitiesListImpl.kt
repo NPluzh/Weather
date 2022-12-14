@@ -4,8 +4,8 @@ import com.example.weather.domain.Weather
 import com.example.weather.domain.getRussianCities
 import com.example.weather.domain.getWorldCities
 
-class RepositoryLocalImpl : RepositoryMany,RepositoryOne {
-    override fun getListWeather(location: Location): List<Weather> {
+class RepositoryCitiesListImpl : RepositoryCitiesList {
+    override fun getListCities(location: Location): List<Weather> {
         return when (location) {
             Location.Russian -> {
                 getRussianCities()
@@ -14,9 +14,5 @@ class RepositoryLocalImpl : RepositoryMany,RepositoryOne {
                 getWorldCities()
             }
         }
-    }
-
-    override fun getWeather(lat: Double, lon: Double): Weather {
-        return Weather()
     }
 }

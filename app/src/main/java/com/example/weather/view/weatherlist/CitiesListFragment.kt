@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.databinding.FragmentWeatherListBinding
 import com.example.weather.viewmodel.AppState
@@ -13,12 +12,14 @@ import com.example.weather.R
 import com.example.weather.domain.Weather
 import com.example.weather.view.details.DetailsFragment
 import com.example.weather.view.details.OnItemClick
+import com.example.weather.viewmodel.citieslist.CitiesListViewModel
+import com.example.weather.viewmodel.citieslist.CityListFragmentAppState
 
 
-class WeatherListFragment : Fragment() , OnItemClick {
+class CitiesListFragment : Fragment() , OnItemClick {
 
     companion object {
-        fun newInstance() = WeatherListFragment() // метод newInstance() возвращает WeatherListFragment()
+        fun newInstance() = CitiesListFragment() // метод newInstance() возвращает WeatherListFragment()
     }
 
     var isRussian = true
@@ -34,7 +35,7 @@ class WeatherListFragment : Fragment() , OnItemClick {
         _binding = null
     }
 
-    lateinit var viewModel: WeatherListViewModel
+    lateinit var viewModel: CitiesListViewModel
     override fun onCreateView( // процесс создания фрагмента
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,7 +47,7 @@ class WeatherListFragment : Fragment() , OnItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {// реагируем, когда фрагмент создан
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(WeatherListViewModel::class.java)//получение ViewModel из "чана"
+        viewModel = ViewModelProvider(this).get(CitiesListViewModel::class.java)//получение ViewModel из "чана"
         viewModel.getLiveData().observe(viewLifecycleOwner) { t -> renderData(t) }
 
         binding.weatherListFragmentFAB.setOnClickListener {
@@ -62,18 +63,22 @@ class WeatherListFragment : Fragment() , OnItemClick {
         viewModel.getWeatherListForRussia()
     }
 
-    private fun renderData(appState: AppState){
-        when (appState){
-            is AppState.Error -> { binding.showResult()}
-            AppState.Loading -> {binding.loading()}
-            is AppState.SuccessOne -> {
+    private fun renderData(cityListFragmentAppState: CityListFragmentAppState) {
+        when (cityListFragmentAppState) {
+            is CityListFragmentAppState.Error -> {
                 binding.showResult()
-                val result = appState.weatherData
             }
-            is AppState.SuccessMulti ->{
+            CityListFragmentAppState.Loading -> {
+                binding.loading()
+            }
+            is CityListFragmentAppState.SuccessOne -> {
+                binding.showResult()
+                val result = cityListFragmentAppState.weatherData
+            }
+            is CityListFragmentAppState.SuccessMulti -> {
                 binding.showResult()
                 binding.mainFragmentRecyclerView.adapter =
-                    WeatherListAdapter(appState.weatherList, this)
+                    DetailsListAdapter(cityListFragmentAppState.weatherList, this)
             }
         }
     }

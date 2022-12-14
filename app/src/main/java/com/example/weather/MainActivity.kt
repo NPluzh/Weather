@@ -15,7 +15,7 @@ import com.example.weather.another.MyBroadCastReceiver
 import com.example.weather.another.MyService
 import com.example.weather.another.ThreadsFragment
 import com.example.weather.databinding.ActivityMainBinding
-import com.example.weather.view.weatherlist.WeatherListFragment
+import com.example.weather.view.weatherlist.CitiesListFragment
 
 internal class MainActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ internal class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, WeatherListFragment.newInstance()).commit()
+                .replace(R.id.container, CitiesListFragment.newInstance()).commit()
         }
         startService(Intent(this, MyService::class.java).apply {
             putExtra(BUNDLE_KEY,"Hello")
