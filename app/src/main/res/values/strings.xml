@@ -7,4 +7,5 @@
     <string name="error">Error</string>
     <string name="reload">Reload</string>
     <string name="threads">threads</string>
+    <string name="history">history</string>
 </resources>

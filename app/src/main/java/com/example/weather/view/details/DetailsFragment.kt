@@ -34,7 +34,6 @@ class DetailsFragment : Fragment() {
             return _binding!!
         }
 
-    lateinit var weatherLocal: Weather
 
     private val viewModel by lazy {
         ViewModelProvider(this).get(DetailsViewModel::class.java)
@@ -54,59 +53,39 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val weather = arguments?.let { arg ->
             arg.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
         }
 
-        weather?.let { weatherLocal ->
-            this.weatherLocal = weatherLocal
-            viewModel.getWeather(weatherLocal.city.lat,weatherLocal.city.lon)
+        weather?.let {
             viewModel.getLiveData().observe(viewLifecycleOwner) {
                 renderData(it)
             }
+            viewModel.getWeather(it.city)
         }
     }
-
-
-    // FIXME диссонанс this - как бы приемник?
     private fun renderData(detailsFragmentAppState: DetailsFragmentAppState) {
 
-        when(detailsFragmentAppState){
+        when (detailsFragmentAppState) {
             is DetailsFragmentAppState.Error -> {}
             DetailsFragmentAppState.Loading -> {}
             is DetailsFragmentAppState.Success -> {
                 with(binding) {
-                    val weatherDTO = detailsFragmentAppState.weatherData
-                    cityName.text = weatherLocal.city.name
-                    temperatureValue.text = weatherDTO.fact.temp.toString()
-                    feelsLikeValue.text = weatherDTO.fact.feelsLike.toString()
-                    cityCoordinates.text = "${weatherLocal.city.lat}/${weatherLocal.city.lon}"
-
-                    //icon.load("https://c1.staticflickr.com/1/186/31520440226_175445c41a_b.jpg"){
-                  /* icon.load("https://i.pinimg.com/originals/de/1f/6f/de1f6f936d497684c4a023dcde8576cc.jpg\n"){
-                        error(R.drawable.ic_earth)
-                        placeholder(R.drawable.ic_launcher_background)
-                        transformations(CircleCropTransformation())
-                    }*/
-
-                    /*Glide.with(this.root)
-                        .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
-                        .into(icon)
-
-                    Picasso.get().load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
-                        .into(icon)*/
-
-                    icon.loadUrl("https://yastatic.net/weather/i/icons/funky/dark/${weatherDTO.fact.icon}.svg")
+                    val weather = detailsFragmentAppState.weatherData
+                    cityName.text = weather.city.name
+                    temperatureValue.text = weather.temperature.toString()
+                    feelsLikeValue.text = weather.feelsLike.toString()
+                    cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
+                    icon.loadUrl("https://yastatic.net/weather/i/icons/funky/dark/${weather.icon}.svg")
                 }
             }
         }
     }
 
-    fun ImageView.loadUrl(url: String) {
+    private fun ImageView.loadUrl(url: String) {
 
         val imageLoader = ImageLoader.Builder(this.context)
-            .componentRegistry{add(SvgDecoder(this@loadUrl.context))}
+            .componentRegistry { add(SvgDecoder(this@loadUrl.context)) }
             .build()
 
         val request = ImageRequest.Builder(this.context)
@@ -118,6 +97,7 @@ class DetailsFragment : Fragment() {
 
         imageLoader.enqueue(request)
     }
+
 
     companion object {
         const val BUNDLE_WEATHER_EXTRA = "sgrrdfge"
@@ -143,6 +123,4 @@ class DetailsFragment : Fragment() {
     }
 
 
-
 }
-
