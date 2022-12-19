@@ -11,21 +11,21 @@ import javax.net.ssl.HttpsURLConnection
 
 object WeatherLoader {// TODO HW 5 try catch
 
-    fun requestFirstVariant(lat: Double,lon: Double,onResponse: OnResponse){
+    fun requestFirstVariant(lat: Double, lon: Double, onResponse: OnResponse) {
         val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}")
         var myConnection: HttpURLConnection? = null
 
         myConnection = uri.openConnection() as HttpURLConnection
         myConnection.readTimeout = 5000
-        myConnection.addRequestProperty("X-Yandex-API-Key","ceae3d76-b634-4bfd-8ef5-25a327758ae9")
-        Thread{
+        myConnection.addRequestProperty("X-Yandex-API-Key", "ceae3d76-b634-4bfd-8ef5-25a327758ae9")
+        Thread {
             val reader = BufferedReader(InputStreamReader(myConnection.inputStream))
             val weatherDTO = Gson().fromJson(getLines(reader), WeatherDTO::class.java)
             onResponse.onResponse(weatherDTO)
         }.start()
     }
 
-    fun requestSecondVariant(lat: Double,lon: Double,block:(weather:WeatherDTO)->Unit){
+    fun requestSecondVariant(lat: Double, lon: Double, block: (weather: WeatherDTO) -> Unit) {
         val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}")
 
         Thread {
@@ -33,13 +33,16 @@ object WeatherLoader {// TODO HW 5 try catch
             myConnection = uri.openConnection() as HttpsURLConnection
             try {
                 myConnection.readTimeout = 5000
-                myConnection.addRequestProperty(YANDEX_API_KEY, "ceae3d76-b634-4bfd-8ef5-25a327758ae9") // оставил ключ для преподавателя ;)
+                myConnection.addRequestProperty(
+                    YANDEX_API_KEY,
+                    "ceae3d76-b634-4bfd-8ef5-25a327758ae9"
+                ) // оставил ключ для преподавателя ;)
 
                 val reader = BufferedReader(InputStreamReader(myConnection.inputStream))
                 val weatherDTO = Gson().fromJson(getLines(reader), WeatherDTO::class.java)
                 block(weatherDTO)
-            }catch (e:Exception){
-            }finally {
+            } catch (e: Exception) {
+            } finally {
                 myConnection.disconnect()
             }
         }.start()

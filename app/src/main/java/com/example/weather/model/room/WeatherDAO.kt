@@ -4,23 +4,31 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+
 @Dao
 interface WeatherDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // FIXME создать конфликт
-    fun insertRoom(weatherEntity:WeatherEntity)
+    fun insertRoom(weatherEntity: WeatherEntity)
 
     @Query("INSERT INTO weather_entity_table (name,lat,lon,temperature,feelsLike) VALUES(:name,:lat,:lon,:temperature,:feelsLike)")
-    fun insertNative1(name:String,lat:Double,lon:Double,temperature:Int,feelsLike:Int)
+    fun insertNative1(name: String, lat: Double, lon: Double, temperature: Int, feelsLike: Int)
 
     @Query("INSERT INTO weather_entity_table (id,name,lat,lon,temperature,feelsLike) VALUES(:id,:name,:lat,:lon,:temperature,:feelsLike)")
-    fun insertNative2(id:Long,name:String,lat:Double,lon:Double,temperature:Int,feelsLike:Int)
+    fun insertNative2(
+        id: Long,
+        name: String,
+        lat: Double,
+        lon: Double,
+        temperature: Int,
+        feelsLike: Int
+    )
 
     @Query("SELECT * FROM weather_entity_table WHERE lat=:mLat AND lon=:mLon")
-    fun getWeatherByLocation(mLat:Double,mLon:Double):List<WeatherEntity>
+    fun getWeatherByLocation(mLat: Double, mLon: Double): List<WeatherEntity>
 
     @Query("SELECT * FROM weather_entity_table")
-    fun getWeatherAll():List<WeatherEntity>
+    fun getWeatherAll(): List<WeatherEntity>
 
     // CRUD
     // INSERT INTO table_name (key1,key2) VALUES(value1,value2)

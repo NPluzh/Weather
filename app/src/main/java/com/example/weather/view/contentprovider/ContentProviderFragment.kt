@@ -11,7 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +21,7 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.weather.databinding.FragmentContentProviderBinding
+
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -102,6 +105,17 @@ class ContentProviderFragment : Fragment() {
             null,
             ContactsContract.Contacts.DISPLAY_NAME + " ASC"
         )
+        cursorWithContacts?.let { cursor->
+            for(i in 0 until cursor.count){ // аналог 0..cursorWithContacts.count-1
+                cursor.moveToPosition(i)
+                val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                binding.containerForContacts.addView(TextView(requireContext()).apply {
+                    text = name
+                    textSize = 25f
+                })
+            }
+        }
+        cursorWithContacts?.close()
     }
 
     override fun onDestroy() {

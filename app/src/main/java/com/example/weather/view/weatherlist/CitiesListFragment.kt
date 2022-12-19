@@ -61,9 +61,10 @@ class CitiesListFragment : Fragment(), OnItemClick {
                 viewModel.getWeatherListForWorld()
                 binding.weatherListFragmentFAB.setImageResource(R.drawable.ic_earth)
             }
-            val sp = requireActivity().getSharedPreferences(SP_DB_NAME_IS_RUSSIAN,Context.MODE_PRIVATE)
+            val sp =
+                requireActivity().getSharedPreferences(SP_DB_NAME_IS_RUSSIAN, Context.MODE_PRIVATE)
             val editor = sp.edit()
-            editor.putBoolean(SP_KEY_IS_RUSSIAN,isRussian)
+            editor.putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
             editor.commit()
             editor.apply()
         }

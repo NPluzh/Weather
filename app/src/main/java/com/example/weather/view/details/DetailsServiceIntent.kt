@@ -3,7 +3,6 @@ package com.example.weather.view.details
 import android.app.IntentService
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.weather.BuildConfig
 import com.example.weather.domain.City
 import com.example.weather.model.dto.WeatherDTO
 import com.example.weather.utils.*
@@ -23,7 +22,8 @@ class DetailsServiceIntent : IntentService("") {
         intent?.let {
             it.getParcelableExtra<City>(BUNDLE_CITY_KEY)?.let {
                 try {
-                    val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${it.lat}&lon=${it.lon}")
+                    val uri =
+                        URL("https://api.weather.yandex.ru/v2/informers?lat=${it.lat}&lon=${it.lon}")
                     Thread {
                         var myConnection: HttpsURLConnection? = null
                         myConnection = uri.openConnection() as HttpsURLConnection
@@ -53,7 +53,7 @@ class DetailsServiceIntent : IntentService("") {
                             myConnection.disconnect()
                         }
                     }.start()
-                }catch (e: MalformedURLException){
+                } catch (e: MalformedURLException) {
 
                 }
 

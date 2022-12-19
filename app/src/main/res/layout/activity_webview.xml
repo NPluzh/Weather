@@ -29,7 +29,6 @@
     </LinearLayout>
 
 
-
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"

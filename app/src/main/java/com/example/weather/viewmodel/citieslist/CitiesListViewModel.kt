@@ -2,8 +2,9 @@ package com.example.weather.viewmodel.citieslist
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.model.*
-import com.example.weather.viewmodel.AppState
+import com.example.weather.model.Location
+import com.example.weather.model.RepositoryCitiesList
+import com.example.weather.model.RepositoryCitiesListImpl
 import kotlin.random.Random
 
 class CitiesListViewModel(private val liveData: MutableLiveData<CityListFragmentAppState> = MutableLiveData<CityListFragmentAppState>()) :

@@ -1,10 +1,6 @@
 package com.example.weather.view.details
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.ImageLoader
 import coil.decode.SvgDecoder
-import coil.load
 import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
-import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.domain.Weather
-import com.example.weather.model.dto.WeatherDTO
-import com.example.weather.utils.*
-import com.google.gson.Gson
-import okhttp3.*
-import java.io.IOException
 
 class DetailsFragment : Fragment() {
 
@@ -64,6 +52,7 @@ class DetailsFragment : Fragment() {
             viewModel.getWeather(it.city)
         }
     }
+
     private fun renderData(detailsFragmentAppState: DetailsFragmentAppState) {
 
         when (detailsFragmentAppState) {

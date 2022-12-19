@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-class MyBroadCastReceiver: BroadcastReceiver() {
+class MyBroadCastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("@@@"," MyBroadCastReceiver ${intent!!.action}")
+        Log.d("@@@", " MyBroadCastReceiver ${intent!!.action}")
     }
 }

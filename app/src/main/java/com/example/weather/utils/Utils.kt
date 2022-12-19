@@ -12,7 +12,7 @@ fun getLines(reader: BufferedReader): String {
     return reader.lines().collect(Collectors.joining("\n"))
 }
 
-fun bindDTOWithCity(weatherDTO: WeatherDTO,city: City): Weather {
+fun bindDTOWithCity(weatherDTO: WeatherDTO, city: City): Weather {
     val fact: Fact = weatherDTO.fact
     return (Weather(city, fact.temp, fact.feelsLike))
 }

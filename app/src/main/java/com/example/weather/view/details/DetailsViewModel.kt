@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.MyApp
+import com.example.weather.domain.City
+import com.example.weather.domain.Weather
 import com.example.weather.model.*
-import com.example.weather.model.dto.WeatherDTO
+import com.example.weather.model.retrofit.RepositoryLocationToOneWeatherRetrofitImpl
 import java.io.IOException
 
 class DetailsViewModel(private val liveData: MutableLiveData<DetailsFragmentAppState> = MutableLiveData<DetailsFragmentAppState>()) :
@@ -93,7 +95,6 @@ class DetailsViewModel(private val liveData: MutableLiveData<DetailsFragmentAppS
             liveData.postValue(DetailsFragmentAppState.Error(e))
         }
     }
-
 
 
     private fun isConnection(): Boolean {// TODO HW реализация

@@ -1,19 +1,12 @@
 package com.example.weather
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.weather.another.BUNDLE_KEY
-import com.example.weather.another.MyBroadCastReceiver
-import com.example.weather.another.MyService
+import androidx.appcompat.app.AppCompatActivity
 import com.example.weather.another.ThreadsFragment
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.room.WeatherHistoryListFragment
@@ -23,8 +16,6 @@ import com.example.weather.view.contentprovider.ContentProviderFragment
 import com.example.weather.view.weatherlist.CitiesListFragment
 
 internal class MainActivity : AppCompatActivity() {
-
-
 
 
     lateinit var binding: ActivityMainBinding
@@ -38,24 +29,23 @@ internal class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, CitiesListFragment.newInstance()).commit()
         }
 
-        val sp = getSharedPreferences(SP_DB_NAME_IS_RUSSIAN,Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(SP_DB_NAME_IS_RUSSIAN, Context.MODE_PRIVATE)
         Log.d("@@@", localClassName)
-        val spActivity = getPreferences(Context.MODE_PRIVATE)// аналог getSharedPreferences("MainActivity.class",Context.MODE_PRIVATE)
+        val spActivity =
+            getPreferences(Context.MODE_PRIVATE)// аналог getSharedPreferences("MainActivity.class",Context.MODE_PRIVATE)
         val spApp =
             PreferenceManager.getDefaultSharedPreferences(this)// аналог getSharedPreferences(getPackageName(),Context.MODE_PRIVATE)
 
 
-        val isRussian = sp.getBoolean(SP_KEY_IS_RUSSIAN,true)
+        val isRussian = sp.getBoolean(SP_KEY_IS_RUSSIAN, true)
         val editor = sp.edit()
-        editor.putBoolean(SP_KEY_IS_RUSSIAN,isRussian)
+        editor.putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
         editor.apply()
 
         sp.edit().apply {
             putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
             apply()
         }
-
-
 
 
     }
@@ -86,7 +76,7 @@ internal class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.menu_content_provider-> {
+            R.id.menu_content_provider -> {
                 supportFragmentManager.apply {
                     beginTransaction()
                         .replace(R.id.container, (ContentProviderFragment()))
