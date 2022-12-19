@@ -19,6 +19,7 @@ import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.room.WeatherHistoryListFragment
 import com.example.weather.utils.SP_DB_NAME_IS_RUSSIAN
 import com.example.weather.utils.SP_KEY_IS_RUSSIAN
+import com.example.weather.view.contentprovider.ContentProviderFragment
 import com.example.weather.view.weatherlist.CitiesListFragment
 
 internal class MainActivity : AppCompatActivity() {
@@ -79,6 +80,16 @@ internal class MainActivity : AppCompatActivity() {
                 supportFragmentManager.apply {
                     beginTransaction()
                         .replace(R.id.container, WeatherHistoryListFragment())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+                true
+            }
+
+            R.id.menu_content_provider-> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .replace(R.id.container, (ContentProviderFragment()))
                         .addToBackStack("")
                         .commitAllowingStateLoss()
                 }
