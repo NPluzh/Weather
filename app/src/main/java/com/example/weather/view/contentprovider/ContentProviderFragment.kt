@@ -21,6 +21,7 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.weather.databinding.FragmentContentProviderBinding
+import kotlin.math.max
 
 import kotlinx.android.synthetic.main.fragment_details.*
 
