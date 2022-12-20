@@ -17,21 +17,21 @@ fun interface RepositoryWeatherSave {
 }
 
 
-interface CommonWeatherCallback{
+interface CommonWeatherCallback {
     fun onResponse(weather: Weather)
     fun onFailure(e: IOException)
 }
 
-interface CommonListWeatherCallback{
+interface CommonListWeatherCallback {
     fun onResponse(weather: List<Weather>)
     fun onFailure(e: IOException)
 }
 
 fun interface RepositoryCitiesList {
-    fun getListCities(location:Location):List<Weather>
+    fun getListCities(location: Location): List<Weather>
 }
 
-sealed class Location{
-    object Russian:Location()
-    object World:Location()
+sealed class Location {
+    object Russian : Location()
+    object World : Location()
 }

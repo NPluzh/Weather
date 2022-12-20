@@ -27,39 +27,39 @@ class ThreadsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("@@@","${Thread.currentThread()}")
-        var counter =0
+        Log.d("@@@", "${Thread.currentThread()}")
+        var counter = 0
 
 
         binding.button.setOnClickListener {
-            Thread{
+            Thread {
                 //Log.d("@@@","${Thread.currentThread()}")
                 Thread.sleep(200L)
                 Handler(Looper.getMainLooper()).post(Runnable {
-                    binding.textView.text= hardWork() // FIXME
-                    binding.button.textSize =10f
+                    binding.textView.text = hardWork() // FIXME
+                    binding.button.textSize = 10f
                     binding.mainContainer.addView(TextView(requireContext()).apply {
-                        text ="${counter++}"
-                        textSize =20f
+                        text = "${counter++}"
+                        textSize = 20f
                     })
                 })
             }.start()
         }
 
 
-        val mThread =MyThread()
+        val mThread = MyThread()
         mThread.start()
         binding.button2.setOnClickListener {
             mThread.handler?.let {
-                it.post{
-                    Log.d("@@@","${Thread.currentThread()} $counter")
+                it.post {
+                    Log.d("@@@", "${Thread.currentThread()} $counter")
                     val result = hardWork()
                     Handler(Looper.getMainLooper()).post(Runnable {
-                        binding.textView2.text=""
-                        binding.button2.textSize =10f
+                        binding.textView2.text = ""
+                        binding.button2.textSize = 10f
                         binding.mainContainer.addView(TextView(requireContext()).apply {
-                            text ="${counter++}"
-                            textSize =20f
+                            text = "${counter++}"
+                            textSize = 20f
                         })
                     })
                 }
@@ -67,8 +67,8 @@ class ThreadsFragment : Fragment() {
         }
     }
 
-    class MyThread:Thread(){
-        var handler:Handler?=null
+    class MyThread : Thread() {
+        var handler: Handler? = null
         override fun run() {
             Looper.prepare()
             handler = Handler()
@@ -77,17 +77,15 @@ class ThreadsFragment : Fragment() {
     }
 
 
-    private fun hardWork():String{
+    private fun hardWork(): String {
         Thread.sleep(200L)
         return hardWork2()
     }
 
-    private fun hardWork2():String{
+    private fun hardWork2(): String {
         Thread.sleep(200L)
         return "Получилось"
     }
-
-
 
 
     override fun onDestroy() {

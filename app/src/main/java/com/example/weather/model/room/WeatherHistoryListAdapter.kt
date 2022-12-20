@@ -8,7 +8,10 @@ import com.example.weather.databinding.FragmentWeatherHistoryListRecyclerItemBin
 import com.example.weather.domain.Weather
 import com.example.weather.view.details.OnItemClick
 
-class WeatherHistoryListAdapter(private val dataList:List<Weather>, private val callback: OnItemClick):
+class WeatherHistoryListAdapter(
+    private val dataList: List<Weather>,
+    private val callback: OnItemClick
+) :
     RecyclerView.Adapter<WeatherHistoryListAdapter.WeatherViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {

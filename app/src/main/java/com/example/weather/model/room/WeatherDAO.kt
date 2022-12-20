@@ -1,14 +1,16 @@
 package com.example.weather.model.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import android.database.Cursor
+import androidx.room.*
+
 @Dao
 interface WeatherDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // FIXME создать конфликт
     fun insertRoom(weatherEntity:WeatherEntity)
+
+    @Update
+    fun updateRoom(weatherEntity:WeatherEntity)
 
     @Query("INSERT INTO weather_entity_table (name,lat,lon,temperature,feelsLike) VALUES(:name,:lat,:lon,:temperature,:feelsLike)")
     fun insertNative1(name:String,lat:Double,lon:Double,temperature:Int,feelsLike:Int)
@@ -22,12 +24,15 @@ interface WeatherDAO {
     @Query("SELECT * FROM weather_entity_table")
     fun getWeatherAll():List<WeatherEntity>
 
-    // CRUD
-    // INSERT INTO table_name (key1,key2) VALUES(value1,value2)
-    // SELECT * FROM table_name WHERE key1=1
-    // SELECT * FROM table_name WHERE lat IN(30,31,32,40)
-    // SELECT * FROM table_name WHERE lat  between 1 and 10
-    // UPDATE table_name SET name=newName WHERE key1=1
-    // DELETE FROM table_name WHERE key1=1
 
-}
+    /**Start
+     * LESSON 9 ContentProvider*/
+
+    @Query("DELETE FROM weather_entity_table WHERE id = :id")
+    fun deleteById(id: Long)
+
+    @Query("SELECT id, name, temperature FROM weather_entity_table")
+    fun getWeatherCursor(): Cursor
+
+    @Query("SELECT id, name, temperature FROM weather_entity_table WHERE id = :id ") //ORDER BY id DESC LIMIT 1
+    fun getWeatherCursor(id: Long): Cursor}

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Weather</string>
 
+    <string name="content_provider">Content provider</string>
+    <string name="authorities">weather.list.lesson9.provider</string>
+
+
+
     <string name="temperature_label">Температура</string>
     <string name="feels_like_label">Ощущается как</string>
     <string name="city_coordinates">lt/ln: %s, %s"</string>
