@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android-extensions'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -39,6 +40,11 @@ android {
 }
 
 dependencies {
+    //FCM
+    //implementation platform('com.google.firebase:firebase-bom:30.3.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.6'
+
+    //maps
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     //

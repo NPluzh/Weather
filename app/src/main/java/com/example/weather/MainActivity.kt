@@ -1,12 +1,16 @@
 package com.example.weather
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import com.example.weather.another.ThreadsFragment
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.room.WeatherHistoryListFragment
@@ -15,8 +19,13 @@ import com.example.weather.utils.SP_KEY_IS_RUSSIAN
 import com.example.weather.view.contentprovider.ContentProviderFragment
 import com.example.weather.view.maps.MapsFragment
 import com.example.weather.view.weatherlist.CitiesListFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+
 
 internal class MainActivity : AppCompatActivity() {
+
+
 
 
     lateinit var binding: ActivityMainBinding
@@ -30,26 +39,16 @@ internal class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, CitiesListFragment.newInstance()).commit()
         }
 
-        val sp = getSharedPreferences(SP_DB_NAME_IS_RUSSIAN, Context.MODE_PRIVATE)
-        Log.d("@@@", localClassName)
-        val spActivity =
-            getPreferences(Context.MODE_PRIVATE)// аналог getSharedPreferences("MainActivity.class",Context.MODE_PRIVATE)
-        val spApp =
-            PreferenceManager.getDefaultSharedPreferences(this)// аналог getSharedPreferences(getPackageName(),Context.MODE_PRIVATE)
-
-
-        val isRussian = sp.getBoolean(SP_KEY_IS_RUSSIAN, true)
-        val editor = sp.edit()
-        editor.putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
-        editor.apply()
-
-        sp.edit().apply {
-            putBoolean(SP_KEY_IS_RUSSIAN, isRussian)
-            apply()
-        }
-
-
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("@@@", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            val token = task.result
+            Log.d("@@@", "$token")
+        })
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_screen_menu, menu)
@@ -77,7 +76,7 @@ internal class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.menu_content_provider -> {
+            R.id.menu_content_provider-> {
                 supportFragmentManager.apply {
                     beginTransaction()
                         .replace(R.id.container, (ContentProviderFragment()))
@@ -102,4 +101,5 @@ internal class MainActivity : AppCompatActivity() {
 
 
 }
+
 
