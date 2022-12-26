@@ -19,6 +19,9 @@ import com.example.weather.utils.SP_KEY_IS_RUSSIAN
 import com.example.weather.view.contentprovider.ContentProviderFragment
 import com.example.weather.view.maps.MapsFragment
 import com.example.weather.view.weatherlist.CitiesListFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+
 
 internal class MainActivity : AppCompatActivity() {
 
@@ -36,43 +39,16 @@ internal class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, CitiesListFragment.newInstance()).commit()
         }
 
-        pushNotification("title","body")
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("@@@", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            val token = task.result
+            Log.d("@@@", "$token")
+        })
     }
 
-    val CHANNEL_HIGH_ID = "channel_we3tw43"
-    val CHANNEL_LOW_ID = "channel_rey"
-    val NOTIFICATION_ID1 = 1
-    val NOTIFICATION_ID2 = 1
-
-    private fun pushNotification(title:String, body:String){
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val notification = NotificationCompat.Builder(this,CHANNEL_HIGH_ID).apply {
-            setContentTitle(title)
-            setContentText(body)
-            setSmallIcon(R.drawable.ic_kotlin_logo)
-            priority = NotificationCompat.PRIORITY_MAX
-            //intent = PendingIntent() TODO HW по клику на push - открыть MainActivity
-        }
-
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-            val channelHigh = NotificationChannel(CHANNEL_HIGH_ID,CHANNEL_HIGH_ID,
-                NotificationManager.IMPORTANCE_HIGH)
-            channelHigh.description = "Канал для бла бла бла"
-            notificationManager.createNotificationChannel(channelHigh)
-        }
-
-        notificationManager.notify(NOTIFICATION_ID1,notification.build())
-
-
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-            val channelLow = NotificationChannel(CHANNEL_LOW_ID,CHANNEL_LOW_ID, NotificationManager.IMPORTANCE_LOW)
-            channelLow.description = "Канал LOW для бла бла бла"
-            notificationManager.createNotificationChannel(channelLow)
-        }
-        notificationManager.notify(NOTIFICATION_ID2,notification.build())
-
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_screen_menu, menu)
@@ -125,4 +101,5 @@ internal class MainActivity : AppCompatActivity() {
 
 
 }
+
 
