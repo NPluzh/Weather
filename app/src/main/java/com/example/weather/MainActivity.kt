@@ -13,6 +13,7 @@ import com.example.weather.model.room.WeatherHistoryListFragment
 import com.example.weather.utils.SP_DB_NAME_IS_RUSSIAN
 import com.example.weather.utils.SP_KEY_IS_RUSSIAN
 import com.example.weather.view.contentprovider.ContentProviderFragment
+import com.example.weather.view.maps.MapsFragment
 import com.example.weather.view.weatherlist.CitiesListFragment
 
 internal class MainActivity : AppCompatActivity() {
@@ -80,6 +81,16 @@ internal class MainActivity : AppCompatActivity() {
                 supportFragmentManager.apply {
                     beginTransaction()
                         .replace(R.id.container, (ContentProviderFragment()))
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+                true
+            }
+
+            R.id.menu_google_maps-> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .replace(R.id.container, (MapsFragment()))
                         .addToBackStack("")
                         .commitAllowingStateLoss()
                 }
