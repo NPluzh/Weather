@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">Weather FREE</string>
 
     <string name="content_provider">Content provider</string>
     <string name="authorities">weather.list.lesson9.provider</string>
